@@ -7,24 +7,28 @@ export default class SpriteSheet {
         this.tiles =  new Map();
     }
 
-    define(name, x, y){
+    define(name, x, y, sheetWidth, sheetHeight){
         const buffer = document.createElement('canvas');
-        buffer.width = this.width;
-        buffer.height = this.height;
+        buffer.width = sheetWidth;
+        buffer.height = sheetHeight;
         buffer
             .getContext('2d')
             .drawImage(
                 this.image,
-                x*this.width,
-                y*this.height,
-                this.width,
-                this.height,
+                x,
+                y,
+                sheetWidth,
+                sheetHeight,
                 0,
                 0,
-                this.width,
-                this.height
+                sheetWidth,
+                sheetHeight
             );
         this.tiles.set(name, buffer);
+    }
+
+    defineTile(name, x, y){
+        this.define(name, x *this.width, y*this.height, this.width, this.height);
     }
 
     draw(name, context, x, y){
@@ -45,24 +49,27 @@ const SpriteSheetFactory = (image, width, height) => {
     const tiles = new Map();
 
     return {
-        define: (name, x, y) => {
+        define: (name, x, y, sheetWidth, sheetHeight) => {
             const buffer = document.createElement('canvas');
-            buffer.width = width;
-            buffer.height = height;
+            buffer.width = sheetWidth;
+            buffer.height = sheetHeight;
             buffer
                 .getContext('2d')
                 .drawImage(
                     image,
-                    x*width,
-                    y*height,
-                    width,
-                    height,
+                    x,
+                    y,
+                    sheetWidth,
+                    sheetHeight,
                     0,
                     0,
-                    width,
-                    height
+                    sheetWidth,
+                    sheetHeight
                 );
             tiles.set(name, buffer);
+        },
+        defineTile: (name, x, y) => {
+            this.define(name, x *this.width, y*this.height, this.width, this.height);
         },
         draw: (name, context, x, y) => {
             const buffer = tiles.get(name);
