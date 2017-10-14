@@ -1,7 +1,7 @@
 import SpriteSheet from './SpriteSheet.js'
 import {loadImage} from './loaders.js'
 
-export function loadBackgroundSprites(){
+export function loadBackgroundSprites() {
     return loadImage('/img/tileset.png')
     .then(image => {
         const sprites =  new SpriteSheet(image, 16, 16);
@@ -11,7 +11,7 @@ export function loadBackgroundSprites(){
     });
 }
 
-export function loadMarioSprite(){
+export function loadMarioSprite() {
     return loadImage('/img/characters.gif')
     .then(image => {
         const sprite =  new SpriteSheet(image, 16, 16);

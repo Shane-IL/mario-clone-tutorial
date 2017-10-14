@@ -1,4 +1,4 @@
-export function loadImage(url){
+export function loadImage(url) {
     return new Promise(resolve => {
         const image =  new Image();
         image.addEventListener('load', ()=>{
@@ -8,7 +8,7 @@ export function loadImage(url){
     });
 }
 
-export function loadLevel(name){
+export function loadLevel(name) {
     return fetch(`levels/${name}.json`)
-    .then(r=>r.json());
+    .then(r => r.json());
 }
