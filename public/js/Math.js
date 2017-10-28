@@ -12,15 +12,15 @@ export class Matrix {
     }
 
     set(x, y, value) {
-        if(!this.grid[x]) {
+        if (!this.grid[x]) {
             this.grid[x] = [];
         }
         this.grid[x][y] = value;
     }
 
-    get(x, y){
+    get(x, y) {
         const col = this.grid[x];
-        if(col){
+        if (col) {
             return col[y];
         }
         return null;
@@ -28,11 +28,11 @@ export class Matrix {
 }
 
 export class Vec2 {
-    constructor(x,y){
-        this.set(x,y);
+    constructor(x, y) {
+        this.set(x, y);
     }
 
-    set(x,y) {
+    set(x, y) {
         this.x = x;
         this.y = y;
     }
