@@ -1,5 +1,6 @@
 import Level from './Level.js';
-import SpriteSheet from './SpriteSheet.js'
+import SpriteSheet from './SpriteSheet.js';
+import { createAnimation } from './animation.js';
 import { createBackgroundLayer, createSpriteLayer } from './layers.js';
 
 function loadJSON(url) {
@@ -66,6 +67,13 @@ export function loadSpriteSheet(name) {
         if(sheetSpec.frames){
             sheetSpec.frames.forEach(frameSpec => {
                 sprites.define(frameSpec.name, ...frameSpec.rect);
+            });
+        }
+
+        if(sheetSpec.animations){
+            sheetSpec.animations.forEach(animSpec => {
+                const animation = createAnimation(animSpec.frames, animSpec.frameLength);
+                sprites.defineAnimation(animSpec.name, animation);
             });
         }
 
