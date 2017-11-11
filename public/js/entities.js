@@ -1,15 +1,8 @@
 import Entity from './Entity.js';
 import Go from './traits/Go.js';
 import Jump from './traits/Jump.js';
+import { createAnimation } from './animation.js';
 import { loadSpriteSheet } from './loaders.js';
-
-function createAnimation(frames, frameLength) {
-    return function resolveFrame(distance) {
-        const frameIndex = Math.floor(distance / frameLength) % frames.length;
-        const frameName = frames[frameIndex];
-        return frameName;
-    };
-}
 
 export function createMario() {
     return loadSpriteSheet('mario')
