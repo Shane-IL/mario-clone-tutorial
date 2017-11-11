@@ -4,7 +4,7 @@ export default class SpriteSheet {
         this.image = image;
         this.width = width;
         this.height = height;
-        this.tiles =  new Map();
+        this.tiles = new Map();
     }
 
     define(name, x, y, sheetWidth, sheetHeight) {
@@ -28,7 +28,7 @@ export default class SpriteSheet {
     }
 
     defineTile(name, x, y) {
-        this.define(name, x *this.width, y*this.height, this.width, this.height);
+        this.define(name, x * this.width, y * this.height, this.width, this.height);
     }
 
     draw(name, context, x, y) {
