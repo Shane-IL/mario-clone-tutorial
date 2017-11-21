@@ -45,59 +45,59 @@ export function createTiles(level, backgrounds) {
 				applyRange(background, xStart, 1, yStart, 1);
 			}
 		});
-	})
+	});
 }
 
 
 export function loadSpriteSheet(name) {
 	return loadJSON(`/sprites/${name}.json`)
-	.then(sheetSpec => Promise.all([
-		sheetSpec,
-		loadImage(sheetSpec.imageUrl)
-	]))
-	.then(([sheetSpec, image]) => {
-		const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
+		.then(sheetSpec => Promise.all([
+			sheetSpec,
+			loadImage(sheetSpec.imageUrl)
+		]))
+		.then(([sheetSpec, image]) => {
+			const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
 
-		if (sheetSpec.tiles) {
-			sheetSpec.tiles.forEach(tileSpec => {
-				sprites.defineTile(tileSpec.name, tileSpec.index[0], tileSpec.index[1]);
-			});
-		}
+			if (sheetSpec.tiles) {
+				sheetSpec.tiles.forEach(tileSpec => {
+					sprites.defineTile(tileSpec.name, tileSpec.index[0], tileSpec.index[1]);
+				});
+			}
 
-		if(sheetSpec.frames){
-			sheetSpec.frames.forEach(frameSpec => {
-				sprites.define(frameSpec.name, ...frameSpec.rect);
-			});
-		}
+			if(sheetSpec.frames){
+				sheetSpec.frames.forEach(frameSpec => {
+					sprites.define(frameSpec.name, ...frameSpec.rect);
+				});
+			}
 
-		if(sheetSpec.animations){
-			sheetSpec.animations.forEach(animSpec => {
-				const animation = createAnimation(animSpec.frames, animSpec.frameLength);
-				sprites.defineAnimation(animSpec.name, animation);
-			});
-		}
+			if(sheetSpec.animations){
+				sheetSpec.animations.forEach(animSpec => {
+					const animation = createAnimation(animSpec.frames, animSpec.frameLength);
+					sprites.defineAnimation(animSpec.name, animation);
+				});
+			}
 
-		return sprites
-	});
+			return sprites;
+		});
 }
 
 export function loadLevel(name) {
 	return loadJSON(`/levels/${name}.json`)
-	.then(levelSpec => Promise.all([
-		levelSpec,
-		loadSpriteSheet(levelSpec.spriteSheet)
-	]))
-	.then(([levelSpec, backgroundSprites]) => {
-		const level = new Level();
+		.then(levelSpec => Promise.all([
+			levelSpec,
+			loadSpriteSheet(levelSpec.spriteSheet)
+		]))
+		.then(([levelSpec, backgroundSprites]) => {
+			const level = new Level();
 
-		createTiles(level, levelSpec.backgrounds);
+			createTiles(level, levelSpec.backgrounds);
 
-		const backgroundLayer = createBackgroundLayer(level, backgroundSprites);
-		const spriteLayer = createSpriteLayer(level.entities);
+			const backgroundLayer = createBackgroundLayer(level, backgroundSprites);
+			const spriteLayer = createSpriteLayer(level.entities);
 
-		level.comp.layers.push(backgroundLayer);
-		level.comp.layers.push(spriteLayer);
+			level.comp.layers.push(backgroundLayer);
+			level.comp.layers.push(spriteLayer);
 
-		return level;
-	});
+			return level;
+		});
 }
