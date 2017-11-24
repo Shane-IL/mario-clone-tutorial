@@ -15,7 +15,7 @@ export function createMario() {
 
 			const runAnimation = createAnimation(['run-1', 'run-2', 'run-3'], 10);
 			function routeFrame(mario) {
-				if(mario.go.dir !== 0) {
+				if(mario.go.distance > 0) {
 					return runAnimation(mario.go.distance);
 				}
 				return 'idle';
@@ -23,7 +23,7 @@ export function createMario() {
 
 			mario.draw = function drawMario(context) {
 				sprite.draw(routeFrame(this), context, 0, 0, this.go.heading < 0);
-			}
+			};
 			return mario;
 		});
 }
