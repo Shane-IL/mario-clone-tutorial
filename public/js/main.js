@@ -2,6 +2,7 @@ import Camera from './Camera.js';
 import Timer from './Timer.js';
 import { loadLevel } from './loaders/level.js';
 import { loadMario } from './entities/mario.js';
+import { loadGoomba } from './entities/goomba.js';
 import { setupKeyboard } from './input.js';
 
 const canvas = document.getElementById('screen');
@@ -9,9 +10,10 @@ const context = canvas.getContext('2d');
 
 Promise.all([
 	loadMario(),
+	loadGoomba(),
 	loadLevel('1-1')
 ])
-	.then(([createMario, level]) => {
+	.then(([createMario, createGoomba, level]) => {
 		const camera = new Camera();
 		window.camera = camera;
 
@@ -19,6 +21,11 @@ Promise.all([
 
 		const mario = createMario();
 		mario.pos.set(64, 64);
+
+		const goomba =  createGoomba();
+		goomba.pos.x = 220;
+		level.entities.add(goomba);
+
 		level.entities.add(mario);
 
 		const input = setupKeyboard(mario);

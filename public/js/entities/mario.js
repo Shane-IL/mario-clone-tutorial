@@ -1,7 +1,6 @@
 import Entity from '../Entity.js';
 import Go from '../traits/Go.js';
 import Jump from '../traits/Jump.js';
-import { createAnimation } from '../animation.js';
 import { loadSpriteSheet } from '../loaders.js';
 
 const FAST_DRAG = 1/5000;
