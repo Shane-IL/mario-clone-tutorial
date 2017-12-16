@@ -11,15 +11,15 @@ Promise.all([
 	loadMario(),
 	loadLevel('1-1')
 ])
-	.then(([mario, level]) => {
+	.then(([createMario, level]) => {
 		const camera = new Camera();
 		window.camera = camera;
 
 		const timer = new Timer(1 / 60);
 
-		level.entities.add(mario);
-
+		const mario = createMario();
 		mario.pos.set(64, 64);
+		level.entities.add(mario);
 
 		const input = setupKeyboard(mario);
 
