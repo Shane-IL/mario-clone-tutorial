@@ -5,6 +5,7 @@ import { loadMario } from './entities/mario.js';
 import { loadGoomba } from './entities/goomba.js';
 import { loadKoopa } from './entities/koopa.js';
 import { setupKeyboard } from './input.js';
+import {createCollisionLayer} from './layers.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
@@ -32,6 +33,8 @@ Promise.all([
 		const koopa =  createKoopa();
 		koopa.pos.x = 260;
 		level.entities.add(koopa);
+
+		level.comp.layers.push(createCollisionLayer(level));
 
 		const input = setupKeyboard(mario);
 
