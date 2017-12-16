@@ -13,7 +13,7 @@ export function loadMario() {
 }
 
 function createMarioFactory(sprite) {
-	const runAnimation = createAnimation(['run-1', 'run-2', 'run-3'], 6);
+	const runAnimation = sprite.animations.get('run');
 	function routeFrame(mario) {
 		if(mario.jump.falling) {
 			return 'jump';
@@ -27,6 +27,14 @@ function createMarioFactory(sprite) {
 		return 'idle';
 	}
 
+	function setTurboState(turboOn) {
+		this.go.dragFactor = turboOn ? FAST_DRAG : SLOW_DRAG;
+	}
+
+	function drawMario(context) {
+		sprite.draw(routeFrame(this), context, 0, 0, this.go.heading < 0);
+	}
+
 	return function createMario() {
 		const mario = new Entity();
 		mario.size.set(14, 16);
@@ -36,13 +44,9 @@ function createMarioFactory(sprite) {
 
 		mario.addTrait(new Jump());
 
-		mario.turbo = function setTurboState(turboOn) {
-			this.go.dragFactor = turboOn ? FAST_DRAG : SLOW_DRAG;
-		};
+		mario.turbo = setTurboState;
+		mario.draw = drawMario;
 
-		mario.draw = function drawMario(context) {
-			sprite.draw(routeFrame(this), context, 0, 0, this.go.heading < 0);
-		};
-		return mario;	
+		return mario;
 	};
 }
