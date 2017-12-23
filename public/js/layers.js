@@ -112,5 +112,5 @@ export function createCameraLayer(cameraToDraw) {
 			cameraToDraw.size.y
 		);
 		context.stroke();
-	}
+	};
 }
