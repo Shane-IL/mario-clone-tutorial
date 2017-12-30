@@ -1,4 +1,5 @@
 import Entity, {Sides, Trait} from '../Entity.js';
+import Killable from '../traits/Killable.js';
 import PendulumWalk from '../traits/PendulumWalk.js';
 import { loadSpriteSheet } from '../loaders.js';
 
@@ -14,6 +15,7 @@ class Behavior extends Trait {
 
 	collides(us, them) {
 		if (them.stomper) {
+			us.killable.kill();
 			us.pendulumWalk.speed = 0;
 		}
 	}
@@ -21,8 +23,17 @@ class Behavior extends Trait {
 
 function createGoombaFactory(sprite) {
 	const walkAnimation =  sprite.animations.get('walk');
+
+	function routeAnimation(goomba) {
+		if(goomba.killable.dead) {
+			return 'flat';
+		}
+
+		return walkAnimation(goomba.lifeTime);
+	}
+
 	function drawGoomba(context) {
-		sprite.draw(walkAnimation(this.lifeTime), context, 0, 0);
+		sprite.draw(routeAnimation(this), context, 0, 0);
 	}
 
 	return function createGoomba() {
@@ -31,6 +42,7 @@ function createGoombaFactory(sprite) {
 
 		goomba.addTrait(new PendulumWalk());
 		goomba.addTrait(new Behavior());
+		goomba.addTrait(new Killable());
 
 		goomba.draw = drawGoomba;
 
