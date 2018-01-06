@@ -51,8 +51,8 @@ export default class Entity {
 		this.traits.forEach(trait => trait.obstruct(this, side));
 	}
 
-	update(deltaTime) {
-		this.traits.forEach(trait => trait.update(this, deltaTime));
+	update(deltaTime, level) {
+		this.traits.forEach(trait => trait.update(this, deltaTime, level));
 		this.lifeTime += deltaTime;
 	}
 }
