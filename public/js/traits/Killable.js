@@ -1,4 +1,4 @@
-import { Sides, Trait } from '../Entity.js';
+import {Sides, Trait} from '../Entity.js';
 
 export default class Killable extends Trait {
 	constructor() {
@@ -20,7 +20,7 @@ export default class Killable extends Trait {
 	update(entity, deltaTime, level) {
 		if (this.dead) {
 			this.deadTime += deltaTime;
-			if(this.deadTime > this.removeAfter) {
+			if (this.deadTime > this.removeAfter) {
 				level.entities.delete(entity);
 			}
 		}

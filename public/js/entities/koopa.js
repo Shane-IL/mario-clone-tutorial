@@ -1,6 +1,6 @@
 import Entity, {Sides, Trait} from '../Entity.js';
 import Killable from '../traits/Killable.js';
-import PendulumWalk from '../traits/PendulumWalk.js';
+import PendulumMove from '../traits/PendulumMove.js';
 import { loadSpriteSheet } from '../loaders.js';
 
 export function loadKoopa() {
@@ -8,9 +8,21 @@ export function loadKoopa() {
 		.then(createKoopaFactory);
 }
 
+const STATE_WALKING = Symbol('walking');
+const STATE_HIDING = Symbol('hiding');
+const STATE_PANIC = Symbol('panic');
+
 class Behavior extends Trait {
 	constructor() {
 		super('behavior');
+
+		this.hideTime = 0;
+		this.hideDuration = 5;
+
+		this.walkSpeed = null;
+		this.panicSpeed = 300;
+
+		this.state = STATE_WALKING;
 	}
 
 	collides(us, them) {
@@ -20,21 +32,93 @@ class Behavior extends Trait {
 
 		if (them.stomper) {
 			if (them.vel.y > us.vel.y) {
-				us.killable.kill();
-				them.stomper.bounce();
-				us.pendulumWalk.speed = 0;
+				this.handleStomp(us, them);
 			} else {
-				them.killable.kill();
+				this.handleNudge(us, them);
 			}
 			
+		}
+	}
+
+	handleNudge(us, them) {
+		if(this.state === STATE_WALKING) {
+			them.killable.kill();
+		} else if (this.state === STATE_HIDING) {
+			this.panic(us, them);
+		} else if (this.state === STATE_PANIC) {
+			const travelDir = Math.sign(us.vel.x);
+			const impactDir = Math.sign(us.pos.x - them.pos.x);
+			if (travelDir !== 0 && travelDir !== impactDir) {
+				them.killable.kill();
+			}
+		}
+	}
+
+	handleStomp(us, them) {
+		if(this.state === STATE_WALKING) {
+			this.hide(us);
+		} else if (this.state === STATE_HIDING) {
+			us.killable.kill();
+			us.vel.set(100, -200);
+			us.canCollise = false;
+		} else if (this.state === STATE_PANIC) {
+			this.hide(us);
+		}
+	}
+
+	hide(us) {
+		us.vel.x = 0;
+		us.pendulumMove.enabled = false;
+		if(this.walkSpeed === null) {
+			this.walkSpeed =  us.pendulumMove.speed;
+		}
+		this.hideTime = 0;
+		this.state = STATE_HIDING;
+	}
+
+	panic(us, them) {
+		us.pendulumMove.enabled = true;
+		us.pendulumMove.speed = this.panicSpeed * Math.sign(them.vel.x);
+		this.state = STATE_PANIC;
+	}
+
+	unhide(us) {
+		us.pendulumMove.enabled = true;
+		us.pendulumMove.speed =  this.walkSpeed;
+		this.state = STATE_WALKING;
+	}
+
+	update(us, deltaTime) {
+		if (this.state === STATE_HIDING) {
+			this.hideTime += deltaTime;
+			if (this.hideTime > this.hideDuration) {
+				this.unhide(us);
+			}
 		}
 	}
 }
 
 function createKoopaFactory(sprite) {
 	const walkAnimation =  sprite.animations.get('walk');
+	const wakeAnimation =  sprite.animations.get('wake');
+
+	function routeAnimation(koopa) {
+		if(koopa.behavior.state === STATE_HIDING) {
+			if (koopa.behavior.hideTime > 3) {
+				return wakeAnimation(koopa.behavior.hideTime);
+			}
+			return 'hiding';
+		}
+
+		if (koopa.behavior.state === STATE_PANIC) {
+			return 'hiding';
+		}
+
+		return walkAnimation(koopa.lifetime);
+	}
+
 	function drawKoopa(context) {
-		sprite.draw(walkAnimation(this.lifeTime), context, 0, 0, this.vel.x < 0);
+		sprite.draw(routeAnimation(this), context, 0, 0, this.vel.x < 0);
 	}
 
 	return function createKoopa() {
@@ -42,7 +126,7 @@ function createKoopaFactory(sprite) {
 		koopa.size.set(16, 16);
 		koopa.offset.y = 8;
 
-		koopa.addTrait(new PendulumWalk());
+		koopa.addTrait(new PendulumMove());
 		koopa.addTrait(new Behavior());
 		koopa.addTrait(new Killable());
 
