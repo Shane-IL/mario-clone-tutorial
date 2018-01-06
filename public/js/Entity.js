@@ -47,6 +47,10 @@ export default class Entity {
 		this.traits.forEach(trait => trait.collides(this, candidate));
 	}
 
+	draw() {
+		
+	}
+
 	obstruct(side) {
 		this.traits.forEach(trait => trait.obstruct(this, side));
 	}
