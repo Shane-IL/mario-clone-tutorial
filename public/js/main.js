@@ -10,6 +10,7 @@ import {createCollisionLayer} from './layers.js';
 function createPlayerEnvironment(playerEntity) {
 	const playerEnv =  new Entity();
 	const playerControl =  new PlayerController();
+	playerControl.checkpoint.set(64, 64);
 	playerControl.setPlayer(playerEntity);
 	playerEnv.addTrait(playerControl);
 	return playerEnv;
@@ -23,8 +24,6 @@ async function main(canvas) {
 	const camera = new Camera();
 
 	const mario = entityFactory.mario();
-	mario.pos.set(64, 64);
-	level.entities.add(mario);
 
 	const playerEnv = createPlayerEnvironment(mario);
 	level.entities.add(playerEnv);

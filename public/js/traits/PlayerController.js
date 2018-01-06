@@ -1,5 +1,5 @@
 import { Sides, Trait } from '../Entity.js';
-import { Vec2 } from '../Math';
+import { Vec2 } from '../Math.js';
 
 export default class PlayerController extends Trait {
 	constructor() {
