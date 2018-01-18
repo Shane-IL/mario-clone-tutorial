@@ -1,6 +1,7 @@
 import Entity, {Sides, Trait} from '../Entity.js';
 import Killable from '../traits/Killable.js';
 import PendulumMove from '../traits/PendulumMove.js';
+import Solid from '../traits/Solid.js';
 import { loadSpriteSheet } from '../loaders.js';
 
 export function loadGoomba() {
@@ -52,6 +53,7 @@ function createGoombaFactory(sprite) {
 		goomba.addTrait(new PendulumMove());
 		goomba.addTrait(new Behavior());
 		goomba.addTrait(new Killable());
+		goomba.addTrait(new Solid());
 
 		goomba.draw = drawGoomba;
 
